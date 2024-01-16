@@ -122,8 +122,8 @@ XML = """
 
 # Recuperamos nuestras claves de certificado.Para la firma, se necesitan tanto la
 # clave pública como la privada. Para la validación, sólo se requiere la pública.
-clave_publica = open("clave_publica.crt", "r").read()
-clave_privada = open("clave_privada.key", "r").read()
+clave_publica = open("certificate.pem", "r").read()
+clave_privada = open("private_key.pem", "r").read()
 
 # Construimos un objeto XNL a partir de string con el contenido
 nodo_raiz = etree.fromstring(XML)
