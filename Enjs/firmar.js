@@ -1,13 +1,16 @@
-var SignedXml = require("xml-crypto").SignedXml
-var fs = require("fs")
-var xpath = require('xpath')
-var dom = require('xmldom').DOMParser
+var SignedXml = require("xml-crypto").SignedXml;
+var fs = require("fs");
+var xpath = require("xpath");
+var dom = require("xmldom").DOMParser;
 
 // Lee el archivo XML
-var xml = fs.readFileSync('xml_sinfirma.xml', 'utf8');
+var xml = fs.readFileSync("xml_sinfirma.xml", "utf8");
 var doc = new dom().parseFromString(xml);
 
-var sig = new SignedXml({ privateKey: fs.readFileSync("private_key.pem") });
+var sig = new SignedXml({
+  privateKey: fs.readFileSync("private_key.pem"),
+  publicCert: fs.readFileSync("certificate.pem"),
+});
 sig.addReference({
   xpath: "//*[local-name(.)='ExtensionContent']",
   digestAlgorithm: "http://www.w3.org/2000/09/xmldsig#sha1",
@@ -25,7 +28,6 @@ var signature = sig.getSignatureXml();
 var parser = new dom();
 var signatureNode = parser.parseFromString(signature);
 nodes[0].appendChild(signatureNode);
-
 
 // Guarda el XML firmado
 fs.writeFileSync("xml_firmado.xml", doc.toString());
