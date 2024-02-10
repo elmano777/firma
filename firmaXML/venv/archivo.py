@@ -4,9 +4,9 @@ from cryptography.hazmat.primitives.serialization import pkcs12
 from cryptography.hazmat.backends import default_backend
 
 # Ruta al archivo .p12
-p12_path = "CERT_Rodri_2022.p12"
+p12_path = "cert_LYF_2024.p12"
 # Contraseña del archivo .p12
-p12_password = "Rodri2017"
+p12_password = "LyF20241"
 
 # Carga el archivo .p12
 with open(p12_path, 'rb') as f:

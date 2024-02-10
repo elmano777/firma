@@ -1,131 +1,9 @@
 from lxml import etree
 from signxml import XMLSigner 
 
-# Nuestro contenido XML
-XML = """
-<DespatchAdvice xmlns="urn:oasis:names:specification:ubl:schema:xsd:DespatchAdvice-2"
-    xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2"
-    xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2"
-    xmlns:ccts="urn:un:unece:uncefact:documentation:2"
-    xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
-    xmlns:ext="urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2"
-    xmlns:sac="urn:sunat:names:specification:ubl:peru:schema:xsd:SunatAggregateComponents-1"
-    xmlns:udt="urn:un:unece:uncefact:data:specification:UnqualifiedDataTypesSchemaModule:2"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-    <ext:UBLExtensions>
-        <ext:UBLExtension>
-            <ext:ExtensionContent/>
-        </ext:UBLExtension>
-    </ext:UBLExtensions>
-    <cbc:UBLVersionID>2.1</cbc:UBLVersionID>
-    <cbc:CustomizationID>2.0</cbc:CustomizationID>
-    <cbc:ID>T999-3</cbc:ID>
-    <cbc:IssueDate>2024-01-03</cbc:IssueDate>
-    <cbc:IssueTime>10:34:33</cbc:IssueTime>
-    <cbc:DespatchAdviceTypeCode>09</cbc:DespatchAdviceTypeCode>
-    <cbc:Note>prueba ya que sunat no tiene ambiente de prueba para guias</cbc:Note>
-    <cac:Signature>
-        <cbc:ID>PATRIOT</cbc:ID>
-        <cac:SignatoryParty>
-            <cac:PartyIdentification>
-                <cbc:ID>20177941591</cbc:ID>
-            </cac:PartyIdentification>
-            <cac:PartyName>
-                <cbc:Name>ORGANIZACION FUTURO S.A.C.</cbc:Name>
-            </cac:PartyName>
-        </cac:SignatoryParty>
-        <cac:DigitalSignatureAttachment>
-            <cac:ExternalReference>
-                <cbc:URI>#SignaturePatriot</cbc:URI>
-            </cac:ExternalReference>
-        </cac:DigitalSignatureAttachment>
-    </cac:Signature>
-    <cac:DespatchSupplierParty>
-        <cac:Party>
-            <cac:PartyIdentification>
-                <cbc:ID schemeID="6" schemeName="Documento de Identidad" schemeAgencyName="PE:SUNAT" schemeURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06">20177941591</cbc:ID>
-            </cac:PartyIdentification>
-            <cac:PartyLegalEntity>
-                <cbc:RegistrationName>ORGANIZACION FUTURO S.A.C.</cbc:RegistrationName>
-            </cac:PartyLegalEntity>
-        </cac:Party>
-    </cac:DespatchSupplierParty>
-    <cac:DeliveryCustomerParty>
-        <cac:Party>
-            <cac:PartyIdentification>
-                <cbc:ID schemeID="6" schemeName="Documento de Identidad" schemeAgencyName="PE:SUNAT" schemeURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06">20502197399</cbc:ID>
-            </cac:PartyIdentification>
-            <cac:PartyLegalEntity>
-                <cbc:RegistrationName>OTEM S.A.C.</cbc:RegistrationName>
-            </cac:PartyLegalEntity>
-        </cac:Party>
-    </cac:DeliveryCustomerParty>
-    <cac:Shipment>
-        <cbc:ID>Patriot_Envio</cbc:ID>
-        <cbc:HandlingCode listName="Motivo de traslado" listAgencyName="PE:SUNAT" listURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo20">01</cbc:HandlingCode>
-        <cbc:GrossWeightMeasure unitCode="KGM">6.00</cbc:GrossWeightMeasure>
-        <cac:ShipmentStage>
-            <cbc:TransportModeCode>02</cbc:TransportModeCode>
-            <cac:TransitPeriod>
-                <cbc:StartDate>2024-01-04</cbc:StartDate>
-            </cac:TransitPeriod>
-            <cac:TransportMeans>
-                <cac:RoadTransport>
-                    <cbc:LicensePlateID>AVL842</cbc:LicensePlateID>
-                </cac:RoadTransport>
-            </cac:TransportMeans>
-            <cac:DriverPerson>
-                <cbc:ID schemeID="4" schemeName="Documento de Identidad" schemeAgencyName="PE:SUNAT" schemeURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06">003124214</cbc:ID>
-                <cbc:FirstName>FRANKLIN JESUS</cbc:FirstName>
-                <cbc:FamilyName>DAVILA MOLINA</cbc:FamilyName>
-                <cbc:JobTitle>Principal</cbc:JobTitle>
-                <cac:IdentityDocumentReference>
-                    <cbc:ID>Q003124214</cbc:ID>
-                </cac:IdentityDocumentReference>
-            </cac:DriverPerson>
-        </cac:ShipmentStage>
-        <cac:Delivery>
-            <cac:DeliveryAddress>
-                <cbc:ID schemeAgencyName="PE:INEI" schemeName="Ubigeos">150125</cbc:ID>
-                <cac:AddressLine>
-                    <cbc:Line>AV. LOS CEDROS NRO. 181 URB. SHANGRILA - PUENTE PIEDRA</cbc:Line>
-                </cac:AddressLine>
-            </cac:DeliveryAddress>
-            <cac:Despatch>
-                <cac:DespatchAddress>
-                    <cbc:ID schemeAgencyName="PE:INEI" schemeName="Ubigeos">150114</cbc:ID>
-                    <cac:AddressLine>
-                        <cbc:Line>AV. JAVIER PRADO ESTE 6651 - LA MOLINA</cbc:Line>
-                    </cac:AddressLine>
-                </cac:DespatchAddress>
-            </cac:Despatch>
-        </cac:Delivery>
-        <cac:TransportHandlingUnit>
-            <cac:TransportEquipment>
-                <cbc:ID>AVL842</cbc:ID>
-            </cac:TransportEquipment>
-        </cac:TransportHandlingUnit>
-    </cac:Shipment>
-    <cac:DespatchLine>
-        <cbc:ID>1</cbc:ID>
-        <cbc:DeliveredQuantity unitCode="GLL" unitCodeListID="UN/ECE rec 20" unitCodeListAgencyName="United Nations Economic Commission for Europe">2.000</cbc:DeliveredQuantity>
-        <cac:OrderLineReference>
-            <cbc:LineID/>
-        </cac:OrderLineReference>
-        <cac:Item>
-            <cbc:Description>DIESEL B5 S50 ENDURA</cbc:Description>
-            <cac:SellersItemIdentification>
-                <cbc:ID>0005</cbc:ID>
-            </cac:SellersItemIdentification>
-            <cac:AdditionalItemProperty>
-                <cbc:Name>Indicador de bien regulado por sunat</cbc:Name>
-                <cbc:NameCode listName="Propiedad del item" listAgencyName="PE:SUNAT" listURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo55">7022</cbc:NameCode>
-                <cbc:Value>0</cbc:Value>
-            </cac:AdditionalItemProperty>
-        </cac:Item>
-    </cac:DespatchLine>
-</DespatchAdvice>
-"""
+ # Asegúrate de reemplazar "tu_archivo.xml" con el nombre de tu archivo
+with open("xml_sinfirmar.xml", "rb") as f: 
+    XML = f.read()
 
 # Recuperamos nuestras claves de certificado.Para la firma, se necesitan tanto la
 # clave pública como la privada. Para la validación, sólo se requiere la pública.
@@ -148,16 +26,12 @@ extension_content = nodo_raiz.find('.//{urn:oasis:names:specification:ubl:schema
 for child in nodo_a_firmar_firmado:
     extension_content.append(child)
 
+# Generamos el XML como una cadena
+xml_str = etree.tostring(nodo_raiz, pretty_print=True, xml_declaration=False, encoding='ISO-8859-1')
+
+# Agregamos manualmente la declaración XML con standalone="no"
+xml_str = '<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>\n' + xml_str.decode()
+
 # Guardamos el XML final
-with open("XML_firmado.xml", "w") as f:
-    f.write(etree.tostring(nodo_raiz, pretty_print=True).decode())
-
-print("=== XML original =============================================================")
-print(XML)
-
-print("=== XML firmado ==============================================================")
-print(etree.tostring(nodo_a_firmar_firmado, pretty_print=True).decode())
-
-print("=== XML final ===============================================================")
-with open("XML_firmado.xml", "r") as f:
-    print(f.read())
+with open("XML_firmadoo.xml", "w") as f:
+    f.write(xml_str)
